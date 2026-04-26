@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' });
 
 export const metadata = {
-  title: "GENTLEMAN'S | Modern Menswear",
+  title: "GENTLEMAN'S  Wear website| Modern Menswear",
   description: 'Premium boutique fashion for men.',
 };
 
