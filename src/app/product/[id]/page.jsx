@@ -1,13 +1,15 @@
 'use client';
+import { Suspense } from 'react';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Star, Check, Truck, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Check, Truck, RefreshCw } from 'lucide-react';
 import { products } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 
-export default function ProductDetailPage() {
+// This component uses dynamic hooks (useParams, useCart) and must be wrapped in Suspense
+function ProductContent() {
   const { id } = useParams();
   const product = products.find((p) => p.id === Number(id));
   const { addToCart } = useCart();
@@ -20,7 +22,7 @@ export default function ProductDetailPage() {
     return (
       <div className="pt-32 text-center">
         <h1 className="text-2xl font-serif font-bold">Product not found</h1>
-        <Link href="/product" className="text-amber-700 underline mt-4 inline-block">
+        <Link href="/products" className="text-amber-700 underline mt-4 inline-block">
           Back to shop
         </Link>
       </div>
@@ -41,7 +43,7 @@ export default function ProductDetailPage() {
     <div className="pt-28 pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
-        <Link href="/product" className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-black mb-8">
+        <Link href="/products" className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-black mb-8">
           <ArrowLeft size={16} /> Back to shop
         </Link>
 
@@ -70,17 +72,22 @@ export default function ProductDetailPage() {
           {/* Product Details */}
           <div>
             <h1 className="text-3xl font-serif font-bold text-gray-900">{product.name}</h1>
-            <p className="text-xl text-gray-900 mt-4">GH₵{product.price}</p>
+            <p className="text-xl text-gray-900 mt-4">${product.price}</p>
 
             {/* Rating */}
             <div className="flex items-center gap-2 mt-4">
               <div className="flex text-amber-500">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
+                  <svg
                     key={star}
-                    size={16}
+                    width="16"
+                    height="16"
                     className={star <= Math.round(product.rating) ? 'fill-current' : 'text-gray-300'}
-                  />
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                  </svg>
                 ))}
               </div>
               <span className="text-sm text-gray-500">
@@ -159,7 +166,7 @@ export default function ProductDetailPage() {
             <div className="border-t mt-8 pt-6 grid grid-cols-1 gap-4 text-sm text-gray-600">
               <div className="flex items-center gap-3">
                 <Truck size={18} />
-                <span>Free shipping on orders over GH₵200</span>
+                <span>Free shipping on orders over $200</span>
               </div>
               <div className="flex items-center gap-3">
                 <RefreshCw size={18} />
@@ -170,5 +177,14 @@ export default function ProductDetailPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Main page wrapper with Suspense boundary
+export default function ProductPage() {
+  return (
+    <Suspense fallback={<div className="pt-32 text-center text-gray-500">Loading product...</div>}>
+      <ProductContent />
+    </Suspense>
   );
 }

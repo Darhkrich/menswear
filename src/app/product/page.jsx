@@ -1,40 +1,38 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { Suspense, useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ProductCard from '@/components/ProductCard';
 import { products } from '@/data/products';
-import { SlidersHorizontal, X } from 'lucide-react';
+import { SlidersHorizontal } from 'lucide-react';
 
 const allCategories = ['All', 'Shirts', 'Shoes', 'Knitwear', 'Outerwear', 'Accessories'];
 
-// Extract unique sizes and colors from the dataset
+// All unique sizes and colors from the product data
 const allSizes = [...new Set(products.flatMap((p) => p.sizes || []))].sort();
 const allColors = [...new Set(products.flatMap((p) => p.colors || []))].sort();
 
-export default function ProductsPage() {
+// Inner component that uses useSearchParams and filter logic
+function ProductsContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get('category') || 'All';
 
-  // ----- Filter state -----
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 600 }); // max from data
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 600 });
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
   const [minRating, setMinRating] = useState(0);
-  const [sortBy, setSortBy] = useState('default'); // 'default', 'price-asc', 'price-desc', 'rating', 'name'
-  const [showFilters, setShowFilters] = useState(false); // mobile filter toggle
+  const [sortBy, setSortBy] = useState('default');
+  const [showFilters, setShowFilters] = useState(false);
 
-  // ----- Filtering logic -----
+  // ----- Filtering & sorting logic -----
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    // Category
     if (selectedCategory !== 'All') {
       result = result.filter((p) => p.category === selectedCategory);
     }
 
-    // Search
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
@@ -44,29 +42,24 @@ export default function ProductsPage() {
       );
     }
 
-    // Price range
     result = result.filter(
       (p) => p.price >= priceRange.min && p.price <= priceRange.max
     );
 
-    // Sizes (product has at least one selected size)
     if (selectedSizes.length > 0) {
       result = result.filter((p) =>
         p.sizes?.some((size) => selectedSizes.includes(size))
       );
     }
 
-    // Colors (product has at least one selected color)
     if (selectedColors.length > 0) {
       result = result.filter((p) =>
         p.colors?.some((color) => selectedColors.includes(color))
       );
     }
 
-    // Rating
     result = result.filter((p) => (p.rating || 0) >= minRating);
 
-    // Sort
     switch (sortBy) {
       case 'price-asc':
         result.sort((a, b) => a.price - b.price);
@@ -85,17 +78,8 @@ export default function ProductsPage() {
     }
 
     return result;
-  }, [
-    selectedCategory,
-    searchQuery,
-    priceRange,
-    selectedSizes,
-    selectedColors,
-    minRating,
-    sortBy,
-  ]);
+  }, [selectedCategory, searchQuery, priceRange, selectedSizes, selectedColors, minRating, sortBy]);
 
-  // ----- Toggle array helpers -----
   const toggleSize = (size) => {
     setSelectedSizes((prev) =>
       prev.includes(size) ? prev.filter((s) => s !== size) : [...prev, size]
@@ -118,7 +102,6 @@ export default function ProductsPage() {
     setSortBy('default');
   };
 
-  // ----- Active filter count (for mobile toggle badge) -----
   const activeFilterCount =
     (selectedCategory !== 'All' ? 1 : 0) +
     selectedSizes.length +
@@ -126,7 +109,6 @@ export default function ProductsPage() {
     (minRating > 0 ? 1 : 0) +
     (priceRange.min > 0 || priceRange.max < 600 ? 1 : 0);
 
-  // ---------- UI ----------
   return (
     <div className="pt-28 pb-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -135,9 +117,8 @@ export default function ProductsPage() {
           <p className="text-gray-500 mt-2">Refine your perfect look</p>
         </div>
 
-        {/* Top bar: Search + Category Pills + Mobile Filter Toggle */}
+        {/* Top bar: Category Pills + Search + Mobile Filter Toggle */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
-          {/* Category Pills (scrollable if many) */}
           <div className="flex flex-wrap gap-2 order-2 md:order-1">
             {allCategories.map((cat) => (
               <button
@@ -154,18 +135,15 @@ export default function ProductsPage() {
             ))}
           </div>
 
-          {/* Search + Filter Button */}
           <div className="flex items-center gap-3 w-full md:w-auto order-1 md:order-2">
             <div className="relative flex-1 md:w-64">
               <svg
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                width="18"
-                height="18"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+                width="18" height="18"
+                fill="none" stroke="currentColor" viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
                 type="text"
@@ -190,11 +168,9 @@ export default function ProductsPage() {
         </div>
 
         <div className="flex gap-8">
-          {/* Filter Sidebar (Desktop) / Collapsible (Mobile) */}
+          {/* Filter Sidebar */}
           <aside
-            className={`${
-              showFilters ? 'block' : 'hidden'
-            } md:block w-full md:w-64 shrink-0`}
+            className={`${showFilters ? 'block' : 'hidden'} md:block w-full md:w-64 shrink-0`}
           >
             <div className="bg-gray-50 rounded-lg p-5 space-y-6 sticky top-28">
               <div className="flex items-center justify-between">
@@ -334,16 +310,24 @@ export default function ProductsPage() {
               </div>
             ) : (
               <div className="text-center text-gray-500 py-20">
-                No products match your filters. Try adjusting or{' '}
+                No products match your filters.{' '}
                 <button onClick={clearAllFilters} className="text-amber-700 underline">
-                  clear all filters
+                  Clear all filters
                 </button>
-                .
               </div>
             )}
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+// Main page export wrapped in Suspense
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div className="pt-32 text-center text-gray-500">Loading shop...</div>}>
+      <ProductsContent />
+    </Suspense>
   );
 }
