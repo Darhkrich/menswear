@@ -99,7 +99,7 @@ export default function ProductCard({ product }) {
           <StarRating rating={product.rating} count={product.reviews} />
         </div>
         <p className="text-sm font-medium text-gray-900 whitespace-nowrap">
-          ${product.price}
+        GH₵{product.price}
         </p>
       </div>
     </div>

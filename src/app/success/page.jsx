@@ -55,14 +55,14 @@ function SuccessContent() {
                 <div className="flex-1 text-sm">
                   <p className="font-medium truncate">{item.name}</p>
                   <p className="text-gray-500 text-xs">Size: {item.size} | Color: {item.color} | Qty: {item.qty}</p>
-                  <p className="font-semibold">${(item.price * item.qty).toFixed(2)}</p>
+                  <p className="font-semibold">GH₵{(item.price * item.qty).toFixed(2)}</p>
                 </div>
               </div>
             ))}
           </div>
           <div className="border-t mt-4 pt-4 flex justify-between font-semibold">
             <span>Total</span>
-            <span>${total.toFixed(2)}</span>
+            <span>GH₵{total.toFixed(2)}</span>
           </div>
         </div>
 

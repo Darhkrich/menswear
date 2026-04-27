@@ -114,7 +114,7 @@ export default function CartDrawer() {
                       </button>
                     </div>
                     <div className="text-right">
-                      <span className="text-sm font-semibold block">${(item.price * item.qty).toFixed(2)}</span>
+                      <span className="text-sm font-semibold block">GH₵{(item.price * item.qty).toFixed(2)}</span>
                       <button
                         onClick={() => removeFromCart(item.id, item.size, item.color)}
                         className="text-xs text-red-500 hover:text-red-700 underline mt-1"
@@ -134,7 +134,7 @@ export default function CartDrawer() {
             {freeShippingLeft > 0 ? (
               <div className="bg-gray-50 p-3 rounded text-sm">
                 <p className="text-gray-600">
-                  Spend <span className="font-semibold text-black">${freeShippingLeft.toFixed(2)}</span> more for free shipping!
+                  Spend <span className="font-semibold text-black">GH₵{freeShippingLeft.toFixed(2)}</span> more for free shipping!
                 </p>
                 <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
                   <div
@@ -150,7 +150,7 @@ export default function CartDrawer() {
             )}
             <div className="flex justify-between text-base font-semibold">
               <span>Subtotal</span>
-              <span>${cartTotal.toFixed(2)}</span>
+              <span>GH₵{cartTotal.toFixed(2)}</span>
             </div>
             <button
               onClick={handleCheckout}

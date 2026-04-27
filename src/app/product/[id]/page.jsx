@@ -70,7 +70,7 @@ export default function ProductDetailPage() {
           {/* Product Details */}
           <div>
             <h1 className="text-3xl font-serif font-bold text-gray-900">{product.name}</h1>
-            <p className="text-xl text-gray-900 mt-4">${product.price}</p>
+            <p className="text-xl text-gray-900 mt-4">GH₵{product.price}</p>
 
             {/* Rating */}
             <div className="flex items-center gap-2 mt-4">
@@ -159,7 +159,7 @@ export default function ProductDetailPage() {
             <div className="border-t mt-8 pt-6 grid grid-cols-1 gap-4 text-sm text-gray-600">
               <div className="flex items-center gap-3">
                 <Truck size={18} />
-                <span>Free shipping on orders over $200</span>
+                <span>Free shipping on orders over GH₵200</span>
               </div>
               <div className="flex items-center gap-3">
                 <RefreshCw size={18} />

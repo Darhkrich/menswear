@@ -75,7 +75,7 @@ export default function CheckoutPage() {
                     <h3 className="text-sm font-medium truncate">{item.name}</h3>
                     <p className="text-xs text-gray-500">Size: {item.size} | Color: {item.color}</p>
                     <p className="text-xs text-gray-500">Qty: {item.qty}</p>
-                    <p className="text-sm font-semibold">${(item.price * item.qty).toFixed(2)}</p>
+                    <p className="text-sm font-semibold">GH₵{(item.price * item.qty).toFixed(2)}</p>
                   </div>
                 </div>
               ))}
@@ -84,15 +84,15 @@ export default function CheckoutPage() {
             <div className="mt-6 space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-600">Subtotal</span>
-                <span>${cartTotal.toFixed(2)}</span>
+                <span>GH₵{cartTotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Shipping</span>
-                <span>{shippingCost === 0 ? 'Free' : `$${shippingCost.toFixed(2)}`}</span>
+                <span>{shippingCost === 0 ? 'Free' : `GH₵${shippingCost.toFixed(2)}`}</span>
               </div>
               <div className="flex justify-between font-semibold text-lg border-t pt-2">
                 <span>Total</span>
-                <span>${orderTotal.toFixed(2)}</span>
+                <span>GH₵{orderTotal.toFixed(2)}</span>
               </div>
             </div>
           </div>
